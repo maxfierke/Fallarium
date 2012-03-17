@@ -37,7 +37,7 @@ enum {
 
 typedef struct TetGlobals
 {
-  BITMAP *backbits;
+  ALLEGRO_BITMAP *backbits;
   int endTime, doneTime;
   signed char winLimit, timeLimit;
   /* teflonMode: generate no stick pieces
@@ -54,8 +54,8 @@ typedef struct Timers
 
 typedef struct Seven
 {
-  fixed leftX[768], rightX[768], leftY[768], rightY[768];
-  BITMAP *backBuf, *frontBuf;
+  al_fixed leftX[768], rightX[768], leftY[768], rightY[768];
+  ALLEGRO_BITMAP *backBuf, *frontBuf;
   int leftSide, rightSide;
   int nextX;
 } Seven;
@@ -89,17 +89,17 @@ typedef struct Player
 
 typedef struct ScreenPos
 {
-  fixed a, da;
-  fixed b, db;
-  fixed c, dc;
-  fixed d, dd;
-  fixed theta, dtheta;
-  fixed phi, dphi;
-  fixed scale, dscale;
-  fixed amp, damp;
-  fixed sinusFreq, noise, heat;
+  al_fixed a, da;
+  al_fixed b, db;
+  al_fixed c, dc;
+  al_fixed d, dd;
+  al_fixed theta, dtheta;
+  al_fixed phi, dphi;
+  al_fixed scale, dscale;
+  al_fixed amp, damp;
+  al_fixed sinusFreq, noise, heat;
 
-  fixed xc, yc, xctarget, yctarget;
+  al_fixed xc, yc, xctarget, yctarget;
   int mana; // more mana == more effects
   int fps;
   unsigned int fricCounter;
@@ -111,7 +111,7 @@ typedef struct ScreenPos
 // GLOBALS
 
 extern volatile Timers timers;
-extern BITMAP *tetbits;
+extern ALLEGRO_BITMAP *tetbits;
 extern Player p[2];
 extern TetGlobals g;
 extern int nPlayers;

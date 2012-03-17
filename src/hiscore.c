@@ -62,7 +62,7 @@ unsigned long curPlayerFilename = 0;
  */
 char playersPath[256];
 DATAFILE *theData;
-BITMAP *todlogo, *spin8;
+ALLEGRO_BITMAP *todlogo, *spin8;
 int loggedIn = 0;
 
 int InitScore(DATAFILE *dat)
