@@ -72,14 +72,14 @@ int DY_bitmap_proc(int msg, DIALOG *d, int c)
 {
   if(msg == MSG_DRAW)
   {
-    BITMAP *bmp = (BITMAP *)(d->dp);
+    ALLEGRO_BITMAP *bmp = (ALLEGRO_BITMAP *)(d->dp);
 
     if(bmp != NULL)
     {
-      if(bmp->w == d->w && bmp->h == d->h)
+      if(al_get_bitmap_width(bmp) == al_get_bitmap_width(d) && al_get_bitmap_height(bmp) == al_get_bitmap_height(d))
         draw_sprite(screen, bmp, d->x, d->y);
       else
-        stretch_sprite(screen, bmp, d->x, d->y, d->w, d->h);
+        stretch_sprite(screen, bmp, d->x, d->y, al_get_bitmap_width(d), al_get_bitmap_height(d));
     }
   }
 

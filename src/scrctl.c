@@ -274,7 +274,7 @@ static int compare_ints(const void *ckey, const void *celem) {
 unsigned int Mana2CtlWord(ScreenPos *pos, unsigned int beat) {
 	unsigned ctl = 0;
 	int *found;
-	int i;s
+	int i;
 	int *song_lands;
 	int song_len;
 

@@ -118,7 +118,6 @@ extern int nPlayers;
 
 /* tetanus.c */
 int GameLoop(void);
-void *GetResource(DATAFILE *dat, const char *name);
 void NewGame(int pl);
 void DrawNext(int pl);
 

@@ -16,7 +16,7 @@ typedef struct HiGame
 /* InitScore() *************************
  * Initializes the high score system.
  */
-int InitScore(DATAFILE *dat);
+int InitScore();
 
 /* AddScore() **************************
  * Adds a score to a user's personal high score list.  Returns 0 for

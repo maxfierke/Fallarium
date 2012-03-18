@@ -23,7 +23,7 @@
  their respective owners.
 
  */
-
+#include <allegro5/allegro.h>
 #include "tod.h"
 
 //////////////////////////////////////////////////////////
@@ -354,8 +354,8 @@ static char CarbonStillGoing(void) {
 			}
 
 	/* if something hit the ground, play a thud */
-	if (flooded)
-		/*SendSound(gDropSound)*/;
+	/*if (flooded)
+		SendSound(gDropSound);*/
 
 	ME.y++; /* for scrolling the clear into visibility */
 

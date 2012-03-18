@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_font.h>
 #include "tod.h"
 #include "hgrcos.h"
 #include "hiscore.h"
@@ -6,13 +8,13 @@
 
 #define FRAMERATE 60
 
-int windowWid = 320;
-int windowHt = 200;
+int windowWid = 640;
+int windowHt = 480;
 
 #define NUM_RES 8
 
-int xRes[NUM_RES] = { 320, 320, 400, 512, 640, 640, 800, 1024 };
-int yRes[NUM_RES] = { 200, 240, 300, 384, 400, 480, 600, 768 };
+int xRes[NUM_RES] = { 640, 800, 1024 };
+int yRes[NUM_RES] = { 480, 600, 768 };
 char lucidName[NUM_RES][NUM_RES] = { "LUCID12", "LUCID12", "LUCID16", "LUCID20", "LUCID24",
 										"LUCID24", "LUCID32", "LUCID40" };
 
@@ -52,7 +54,7 @@ int playing_midi = 1;
 
  */
 
-RGB *pal;
+ALLEGRO_COLOR *pal;
 volatile Timers timers;
 ALLEGRO_BITMAP *tetbits;
 ALLEGRO_FONT *lucid;
@@ -62,12 +64,6 @@ void timerint(void) {
 		timers.odo++;
 		timers.trip++;
 	}
-}
-END_OF_FUNCTION( timerint);
-
-void *GetResource(DATAFILE *dat, const char *name) {
-	DATAFILE *that = find_datafile_object(dat, (char *) name);
-	return that ? that->dat : NULL;
 }
 
 /* On some Windows 9x versions + video drivers + DirectX versions +
@@ -526,7 +522,7 @@ static void PlayGame(Seven *seven, ScreenPos *pos, const char *aimsn) {
 			textprintf(seven->frontBuf, lucid, lead * 10, lead * 2, 0, "sc%7u", p[1].score);
 			textprintf(seven->frontBuf, lucid, lead * 10, lead * 3, 0, "line%5u", p[1].lines);
 		}
-		wrapblit(seven->frontBuf, screen, 0, 0, 0, 0, seven->frontBuf->w, seven->frontBuf->h);
+		wrapblit(seven->frontBuf, screen, 0, 0, 0, 0, al_get_bitmap_width(seven->frontBuf), al_get_bitmap_height(seven->frontBuf));
 
 		/*
 		 if(key[KEY_Z])
@@ -569,7 +565,6 @@ static void PlayGame(Seven *seven, ScreenPos *pos, const char *aimsn) {
 int main(void) {
 	int y, i;
 	Seven seven[2];
-	DATAFILE *dat;
 	ALLEGRO_BITMAP *loadedBG;
 
 	char aimsn[17] = "Anonymous Coward";
@@ -592,42 +587,40 @@ int main(void) {
 
 	install_sound(DIGI_NONE, playing_midi ? MIDI_AUTODETECT : MIDI_NONE, NULL);
 
-	dat = load_datafile("idltd.dat");
-	if (!dat) {
-		alert("no idltd.dat", "", "", "OK", NULL, 13, 0);
-		return 1;
-	}
+	ALLEGRO_PATH *path = al_get_standard_path(ALLEGRO_RESOURCES_PATH);
+	al_append_path_component(path, "resources");
+	al_change_directory(al_path_cstr(path, '/'));  // change the working directory
+	al_destroy_path(path);
 
-	loadedBG = GetResource(dat, "IDLTD_ELOI_BMP");
-	tetbits = GetResource(dat, "BLOX");
-	pal = GetResource(dat, "IDLTD_ELOI_PAL");
-	lucid = GetResource(dat, lucidName[y]);
-	if (!loadedBG) {
+	loadedBG = al_load_bitmap("rec.bmp");
+	tetbits = al_load_bitmap("blox.bmp");
+	pal = al_load_bitmap("IDLTD_ELOI_PAL.bmp");
+	lucid = al_load_bitmap(lucidName[y]);
+	if (loadedBG==NULL) {
 		alert("idltd.dat missing IDLTD_ELOI_PCX", "", "", "OK", NULL, 13, 0);
 		return 1;
 	}
-	if (!tetbits) {
+	if (tetbits==NULL) {
 		alert("idltd.dat missing BLOX", "", "", "OK", NULL, 13, 0);
 		return 1;
 	}
-	if (!pal) {
+	if (pal==NULL) {
 		alert("idltd.dat missing IDLTD_ELOI_PAL", "", "", "OK", NULL, 13, 0);
 		return 1;
 	}
-	if (!lucid) {
+	if (lucid==NULL) {
 		alert("idltd.dat missing font", lucidName[y], "", "OK", NULL, 13, 0);
 		return 1;
 	}
 
-	if (InitScore(dat) < 0) {
+	if (InitScore() < 0) {
 		alert("idltd.dat missing login graphics", "", "", "OK", NULL, 13, 0);
 		return 1;
 	}
 
 	seven[0].frontBuf = create_bitmap(windowWid, windowHt);
-	if (!seven[0].frontBuf) {
+	if (seven[0].frontBuf==NULL) {
 		alert("no ram", "", "", "OK", NULL, 13, 0);
-		unload_datafile(dat);
 		return 1;
 	}
 	seven[1].frontBuf = seven[0].frontBuf;
@@ -636,23 +629,21 @@ int main(void) {
 		p[i].seven = &(seven[i]);
 
 		seven[i].backBuf = create_bitmap(256, 256);
-		if (!seven[i].backBuf) {
+		if (seven[i].backBuf==NULL) {
 			alert("no ram", "", "", "OK", NULL, 13, 0);
-			unload_datafile(dat);
 			return 1;
 		}
 	}
 
 	g.backbits = create_bitmap(256, 256);
-	if (!g.backbits) {
+	if (g.backbits==NULL) {
 		alert("no ram", "", "", "OK", NULL, 13, 0);
-		unload_datafile(dat);
 		return 1;
 	}
 
 	set_palette(pal);
 	while (Login(aimsn) >= 0) {
-		while (GetOpts(aimsn, GetResource(dat, "LOGIN_BMP")) >= 0) {
+		while (GetOpts(aimsn, (al_load_bitmap("login.bmp")!=NULL)) >= 0) {
 			ScreenPos pos[2] = { { 0, 0, 0, 0, 0, 0, 0, 0, /* a b c d */
 									0, 0, 0x400000, 0, /* phi */
 									0x13333, 0, /* scale */
@@ -698,9 +689,7 @@ int main(void) {
 	al_destroy_bitmap(seven[0].backBuf);
 	al_destroy_bitmap(seven[1].backBuf);
 	al_destroy_bitmap(g.backbits);
-	unload_datafile(dat);
 	remove_int(timerint);
 
 	return 0;
 }
-END_OF_MAIN();
