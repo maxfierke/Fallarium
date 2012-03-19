@@ -32,7 +32,14 @@ You can't yet. It doesn't compile. I'm not done updating the Allegro 4 (and in
 some cases Allegro 3) functions and such to Allegro 5. A lot changed between A4
 and A5 so there's a lot to do.
     
-    
+TODO
+================================================================================
+- Update A4 functions and constructs to A5.
+- Replace A4 GUI with something more modern that works with A5.
+- Bring in gameplay elements from LOCKJAW: The Overdose (GBA version of TOD)
+- Update graphics, effects, sound, etc.
+- Take advantage of modern 3D hardware.
+
 What are the requirements?
 ================================================================================
 Literally any computer running GNU/Linux, Windows, or even Mac OS X that was
