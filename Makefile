@@ -39,7 +39,7 @@ SRCS = src/rec.c src/a4_aux.c src/allegdlg.c src/crc.c src/hgrcos.c src/hiscore.
 OBJS =	$(SRCS:.c=.o)
 
 # define the executable file 
-MAIN =	lockjawod
+MAIN =	fallarium
 
 #
 # The following part of the makefile is generic; it can be used to 
